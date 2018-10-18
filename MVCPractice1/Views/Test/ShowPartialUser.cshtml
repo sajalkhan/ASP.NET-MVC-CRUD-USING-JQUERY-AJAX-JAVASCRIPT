@@ -1,0 +1,56 @@
+﻿@using System.Drawing.Printing
+@model IEnumerable<MVCPractice1.Models.EmployeeViewModel>
+
+<div class="container">
+    <table class="table table-hover">
+        <tr>
+            <th>Id</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Country</th>
+            <th>City</th>
+            <th>Department</th>
+            <th>Image</th>
+        </tr>
+        <tbody>
+
+        @if (Model != null)
+        {
+            var printDash = "--";
+
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.EmployeeId</td>
+                    <td>@item.Name</td>
+                    <td>@item.Address</td>
+                    <td>
+                        @if (@item.CountryName!=null)
+                        {
+                            @item.CountryName
+                        }
+                        else
+                        {
+                            @printDash
+                        }
+                    </td>
+                    <td>
+                        @if (@item.CityName != null)
+                        {
+                            @item.CityName
+                        }
+                        else
+                        {
+                            @printDash
+                        }
+                    </td>
+                    <td>@item.DepartmentName</td>
+                    <th>
+                        <img src="/images/Uploaded_Image/@item.imagePath" class="img-responsive" height="80" width="80">
+                    </th>
+                </tr>
+            }
+        }
+        </tbody>
+    </table>
+</div>

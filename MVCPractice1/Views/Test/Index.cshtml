@@ -1,0 +1,237 @@
+﻿@model IEnumerable<MVCPractice1.Models.EmployeeViewModel>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@using PagedList.Mvc;
+@using PagedList;
+
+<div style="margin-top: 2%">
+    
+    <div class="form-group" align="right">
+        <input type="text" value="" placeholder="Search.." class="form-control" id="search" style="width: 220px" />
+    </div>
+
+    <table class="table table-hover table-condensed" id="employeeTbl">
+
+        <li class="list-group-item active text-center">All Employee Information</li>
+
+        <thead>
+        <tr>
+            <th>Serial No</th>
+            <th>Name</th>
+            <th>Address</th>
+            <th>Department</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+
+        <tbody id="employeeRow">
+        @if (Model != null)
+        {
+            var count = ViewBag.count * 4;
+
+            foreach (var item in ViewBag.OnePageInfo)
+            {
+                <tr id="row_@item.EmployeeId">
+                    <td>@(count - 3)</td>
+                    <td>@item.Name</td>
+                    <td>@item.Address</td>
+                    <td>@item.DepartmentName</td>
+
+                    <td></td>
+                    <td></td>
+
+                    <td>
+
+                        <a href="#" class="btn btn-success" onclick="checkInfo(@item.EmployeeId)">
+                            <i class="glyphicon glyphicon-eye-open"></i>
+                        </a>
+
+                        <a href="#" class="btn btn-primary" onclick="confirmEdit(@item.EmployeeId)">
+                            <i class="glyphicon glyphicon-pencil"></i>
+                        </a>
+
+                        <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.EmployeeId)">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                count++;
+            }
+        }
+        </tbody>
+    </table>
+
+    <input type="hidden" id="hiddenEmployeeid"/>
+
+    @*<input type="button" value="Add New" onclick="confirmEdit(0)" class="btn btn-primary" />*@
+
+    <div class="modal fade" id="myModal">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button" href="#" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Delete Employee</h3>
+
+                </div>
+
+                <div class="modal-body">
+
+                    <h4>Are you sure? you want to delete this!</h4>
+
+                    <div style="text-align: center; display: none" id="loadImg">
+                        <img style="height: 100px; width: 100px" src="~/images/InternetSlowdown_Day.gif"/>
+                    </div>
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancle</a>
+                    <a href="#" class="btn btn-success" onclick="DeleteEmployee()">Confirm</a>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="userModal">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button" href="#" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Employee Information</h3>
+
+                </div>
+
+                <div class="modal-body" id="lode_user_information">
+
+                </div>
+
+                <div class="modal-footer">
+
+                    <a href="#" class="btn btn-default" data-dismiss="modal">Cancle</a>
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal fade" id="edituserModal">
+
+        <div class="modal-dialog">
+
+            <div class="modal-content">
+
+                <div class="modal-header">
+
+                    <button type="button" href="#" class="close" data-dismiss="modal">&times;</button>
+                    <h3 class="modal-title">Edit Information</h3>
+
+                </div>
+
+                <div class="modal-body" id="loadEditModal">
+
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+
+</div>
+
+@Html.PagedListPager((IPagedList) ViewBag.OnePageInfo, page => Url.Action("Start", new {page}))
+
+
+<script>
+
+    var confirmDelete = function(employeeId) {
+
+        $("#hiddenEmployeeid").val(employeeId);
+        $("#myModal").modal('show');
+    }
+
+    var DeleteEmployee = function() {
+
+        $("#loadImg").show();
+        var empId = $("#hiddenEmployeeid").val();
+
+        $.ajax({
+            type: "POST",
+            url: "/Test/DeleteUser",
+            data: { EmployeeId: empId },
+            success: function(result) {
+
+                $("#loadImg").hide();
+                $("#myModal").modal("hide");
+                $("#row_" + empId).remove();
+                window.location.href = "/Test/Start";
+            }
+        });
+    }
+
+    var checkInfo = function(employeeId) {
+
+        $.ajax({
+            type: "POST",
+            url: "/Test/ShowPartialUser",
+            data: { employeeId: employeeId },
+
+            success: function(response) {
+                $("#lode_user_information").html(response);
+                $("#userModal").modal('show');
+            }
+        });
+    }
+
+    var confirmEdit = function(employeeId) {
+        $.ajax({
+            type: "POST",
+            url: "/Test/EditPartialUser",
+            data: { employeeId: employeeId },
+
+            success: function(response) {
+                $("#loadEditModal").html(response);
+                $("#edituserModal").modal('show');
+            }
+        });
+    }
+
+    $(document).ready(function() {
+
+        $("#search").keydown(function() {
+            var searchText = $(this).val();
+            debugger;
+            $.ajax({
+                type: "Post",
+                url: "/Test/GetSearchRecord?searchText=" + searchText,
+                contentType: "html",
+                success: function(response) {
+
+                    $("#employeeRow").html(response);
+
+                }
+
+            });
+
+        });
+
+    });
+
+</script>

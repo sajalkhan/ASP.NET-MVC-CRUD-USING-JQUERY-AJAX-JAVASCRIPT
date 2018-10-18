@@ -1,0 +1,22 @@
+﻿@model MVCPractice1.Models.EmployeeViewModel
+
+@{
+    ViewBag.Title = "EmployeeDetails";
+}
+
+<div class="container" style="margin-top: 5%; width: 30%">
+   @if (Model != null)
+   {
+       <table>
+           <li class="list-group-item active text-center">@Model.Name Details</li>
+           <ul class="list-group">
+
+               <li class="list-group-item"> EmployeeId: @Model.EmployeeId </li>
+               <li class="list-group-item"> Department Id: @Model.DepartmentId </li>
+               <li class="list-group-item"> Department Name: @Model.DepartmentName </li>
+               <li class="list-group-item"> Address: @Model.Address </li>
+           
+           </ul>
+       </table>
+   }
+</div>

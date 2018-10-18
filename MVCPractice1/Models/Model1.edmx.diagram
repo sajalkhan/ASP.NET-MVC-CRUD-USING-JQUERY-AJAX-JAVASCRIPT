@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="5a54f62ec6324063bb3b81afbfc88692" Name="Diagram1">
+        <EntityTypeShape EntityType="EmployeesModel.Department" Width="1.5" PointX="0.5" PointY="0.875" IsExpanded="true" />
+        <EntityTypeShape EntityType="EmployeesModel.Employee" Width="1.5" PointX="4.75" PointY="0.625" IsExpanded="true" />
+        <AssociationConnector Association="EmployeesModel.FK_Employee_Department" ManuallyRouted="false" />
+        <EntityTypeShape EntityType="EmployeesModel.Site" Width="1.5" PointX="2.25" PointY="3.25" />
+        <AssociationConnector Association="EmployeesModel.FK_Sites_Employee" />
+        <EntityTypeShape EntityType="EmployeesModel.UserRoleTbl" Width="1.5" PointX="6.5" PointY="1.875" />
+        <EntityTypeShape EntityType="EmployeesModel.UserTbl" Width="1.5" PointX="8.75" PointY="1.75" />
+        <AssociationConnector Association="EmployeesModel.FK_UserTbl_UserRoleTbl" />
+        <EntityTypeShape EntityType="EmployeesModel.City" Width="1.5" PointX="6.75" PointY="4.125" />
+        <EntityTypeShape EntityType="EmployeesModel.Country" Width="1.5" PointX="4.375" PointY="4.125" />
+        <AssociationConnector Association="EmployeesModel.FK_City_Country" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

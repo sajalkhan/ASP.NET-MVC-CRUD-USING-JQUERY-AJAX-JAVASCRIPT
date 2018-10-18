@@ -1,0 +1,170 @@
+﻿@model MVCPractice1.Models.EmployeeViewModel
+
+@{
+    ViewBag.Title = "AddNewUser";
+}
+
+
+<div class="container" style="margin-top: 5%">
+
+    <form id="myAddnewUserForm" method="post" enctype="multipart/form-data" onsubmit="return ajaxPost(this)">
+
+        <div class="col-md-6">
+
+            @if (ViewBag.departmentList != null)
+            {
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.DepartmentId, ViewBag.departmentList as SelectList, "--- Select Department ---", new { @id = "depId", @class = "form-control" })
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.EditorFor(x => x.Name, new { htmlAttributes = new { @id = "name", @class = "form-control", @placeholder = "Please Enter User Name" } })
+            </div>
+
+            <div class="form-group">
+                @Html.EditorFor(x => x.Address, new { htmlAttributes = new { @id = "address", @class = "form-control", @placeholder = "Please Enter User Address" } })
+            </div>
+
+            @if (ViewBag.countryList != null)
+            {
+                <div class="form-group">
+                    @Html.DropDownListFor(model => model.CountryId, ViewBag.countryList as SelectList, "--- Select Country ---", new { @id = "countryId", @class = "form-control" })
+                </div>
+            }
+
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.CityId, new SelectList(""), "--- Select City ---", new { @id = "cityId", @class = "form-control" })
+            </div>
+
+            <div class="form-group">
+                <button class="btn btn-success">Submit</button>
+            </div>
+
+        </div>
+
+        @*------------------------------------working with image--------------------------------------*@
+
+        <div class="col-md-4">
+
+            <div style="margin: 10px; margin-left: 120px">
+
+                <img src="~/images/upload_img.jpg" height="200" width="200" id="imagePrivew" />
+
+                <div class="caption" style="display: none" id="clearImg">
+                    <a href="#" onclick="ClearPreview()">
+                        <i class="glyphicon glyphicon-trash"></i>
+                    </a>
+                </div>
+            </div>
+
+            <input type="file" style="margin-left: 120px" name="ImageUpload" accept="image/jpeg,image/png,image/gif" id="imgBrowes" onchange="showImagepreview(this, document.getElementById('imagePrivew'))" />
+
+        </div>
+
+    </form>
+
+</div>
+
+
+<script>
+
+    //load img
+    function showImagepreview(imageUploader, previewImage) {
+        if (imageUploader.files && imageUploader.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $(previewImage).attr('src', e.target.result);
+                $("#clearImg").show();
+            }
+            reader.readAsDataURL(imageUploader.files[0]);
+        }
+    }
+
+    var ClearPreview = function () {
+        $("#imgBrowes").val('');
+        $("#imagePrivew").attr('src', '/images/upload_img.jpg');
+        $("#clearImg").hide();
+    }
+
+
+    //save multiple data also image by jquery ajax
+    function ajaxPost(formData) {
+
+        var res = validate();
+        if (res === false) {
+            return false;
+        }
+
+        var ajaxConfig = {
+            type: "POST",
+            url: "/Test/SaveUserInfo",
+            data: new FormData(formData),
+            success: function (result) {
+
+                $("#name").val("");
+                $("#address").val("");
+                $("#depId").val("");
+                $("#clearImg").hide();
+                $("#imagePrivew").attr('src', '/images/upload_img.jpg');
+                window.location.href = "/Test/Start";
+
+                alert(result);
+            }
+        }
+        if ($(formData).attr('enctype') == "multipart/form-data") {
+            ajaxConfig["contentType"] = false;
+            ajaxConfig["processData"] = false;
+        }
+        $.ajax(ajaxConfig);
+        return false;
+    }
+
+
+    //chage country then load corrosponding city usign jquery and asjaax call
+    $(document).ready(function () {
+
+        $("#countryId").change(function () {
+
+            var countryId = $(this).val();
+            debugger;
+            $.ajax({
+                type: "post",
+                url: "/Test/GetCityList?countryId=" + countryId,
+                contentType:"html",
+                success: function (response) {
+                    debugger;
+                    $("#cityId").empty();
+                    $("#cityId").append(response);
+
+                }
+            });
+        });
+    });
+
+    //Valdidation using jquery
+    function validate() {
+        var isValid = true;
+        if ($("#name").val().trim() == "") {
+            $('#name').css('border-color', 'Red');
+            isValid = false;
+        } else {
+            $('#name').css('border-color', 'lightgrey');
+        }
+        if ($('#address').val().trim() == "") {
+            $('#address').css('border-color', 'Red');
+            isValid = false;
+        } else {
+            $('#address').css('border-color', 'lightgrey');
+        }
+        if ($('#depId').val().trim() == "") {
+            $('#depId').css('border-color', 'Red');
+            isValid = false;
+        } else {
+            $('#depId').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+
+</script>

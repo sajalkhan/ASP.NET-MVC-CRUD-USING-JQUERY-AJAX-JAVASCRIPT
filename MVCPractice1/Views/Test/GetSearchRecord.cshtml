@@ -1,0 +1,35 @@
+﻿@model IEnumerable<MVCPractice1.Models.EmployeeViewModel>
+
+@if (Model != null)
+{
+    var count = 1;
+
+    foreach (var item in Model)
+    {
+        <tr>
+            <td>@count</td>
+            <td>@item.Name</td>
+            <td>@item.DepartmentName</td>
+            <td>@item.Address</td>
+            <td></td>
+            <td></td>
+
+            <td>
+
+                <a href="#" class="btn btn-success" onclick="checkInfo(@item.EmployeeId)">
+                    <i class="glyphicon glyphicon-eye-open"></i>
+                </a>
+
+                <a href="#" class="btn btn-primary" onclick="confirmEdit(@item.EmployeeId)">
+                    <i class="glyphicon glyphicon-pencil"></i>
+                </a>
+
+                <a href="#" class="btn btn-danger" onclick="confirmDelete(@item.EmployeeId)">
+                    <i class="glyphicon glyphicon-trash"></i>
+                </a>
+            </td>
+        </tr>
+        count++;
+
+    }
+}

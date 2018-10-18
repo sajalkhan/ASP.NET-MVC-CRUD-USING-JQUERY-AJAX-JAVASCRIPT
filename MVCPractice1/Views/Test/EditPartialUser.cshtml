@@ -1,0 +1,144 @@
+﻿@model MVCPractice1.Models.EmployeeViewModel
+
+@{
+    ViewBag.Title = "EditUser";
+}
+
+<div>
+
+    <form id="myEditForm">
+
+        @Html.HiddenFor(x => x.EmployeeId)
+
+        @if (ViewBag.departmentList != null)
+        {
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.DepartmentId, ViewBag.departmentList as SelectList, "--- Select Department ---", new { @id = "depId", @class = "form-control" })
+            </div>
+        }
+
+        <div class="form-group">
+            @Html.EditorFor(x => x.Name, new { htmlAttributes = new { @id = "name", @class = "form-control", @placeholder = "Please Enter User Name" } })
+        </div>
+
+        <div class="form-group">
+            @Html.EditorFor(x => x.Address, new { htmlAttributes = new { @id = "address", @class = "form-control", @placeholder = "Please Enter User Address" } })
+        </div>
+
+        @if (ViewBag.countryList != null)
+        {
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.CountryId, ViewBag.countryList as SelectList, "--- Select Country ---", new { @id = "countryId", @class = "form-control" })
+            </div>
+        }
+
+        @if (ViewBag.cityList != null)
+        {
+            <div class="form-group">
+                @Html.DropDownListFor(model => model.CityId, ViewBag.cityList as SelectList, "--- Select City ---", new {@id= "cityId", @class = "form-control" })
+            </div>
+        }
+
+        <a href="#" class="btn btn-block btn-success" onclick="btnSave()">
+
+            @if (Model.EmployeeId > 0)
+            {
+                <span>Update</span>
+            }
+            else
+            {
+                <span>Save</span>
+            }
+        </a>
+
+    </form>
+
+    <div style="text-align: center; display: none" id="loadEdit_Form_Img">
+        <img style="height: 100px; width: 100px" src="~/images/InternetSlowdown_Day.gif" />
+    </div>
+
+</div>
+
+
+<script>
+
+    var btnSave = function () {
+
+        var res = validate();
+        if (res === false) {
+            return false;
+        }
+
+        var data = $("#myEditForm").serialize();
+        $("#loadEdit_Form_Img").show();
+        debugger;
+        $.ajax({
+            type: "POST",
+            url: "/Test/EditUser",
+            data: data,
+            success: function (result) {
+
+                if (result == "pass") {
+                    $("#loadEdit_Form_Img").hide();
+                    $("#edituserModal").modal("hide");
+                    window.location.href = "/Test/Start";
+                }
+
+            }
+        });
+    }
+
+
+
+    //chage country then load corrosponding city usign jquery and asjaax call
+    $(document).ready(function () {
+         
+        $("#countryId").change(function () {
+
+            var countryId = $(this).val();
+
+            debugger;
+            $.ajax({
+                type: "post",
+                url: "/Test/GetCityList?countryId=" + countryId,
+                contentType: "html",
+                success: function (response) {
+                    debugger;
+
+                    $("#cityId").empty();
+                    $("#cityId").append(response);
+
+                }
+            });
+        });
+    });
+
+
+    //Valdidation using jquery
+    function validate() {
+        var isValid = true;
+
+        if ($("#name").val().trim() == "") {
+            $('#name').css('border-color', 'Red');
+            isValid = false;
+        } else {
+            $('#name').css('border-color', 'lightgrey');
+        }
+
+        if ($('#address').val().trim() == "") {
+            $('#address').css('border-color', 'Red');
+            isValid = false;
+        } else {
+            $('#address').css('border-color', 'lightgrey');
+        }
+
+        if ($('#depId').val().trim() == "") {
+            $('#depId').css('border-color', 'Red');
+            isValid = false;
+        } else {
+            $('#depId').css('border-color', 'lightgrey');
+        }
+        return isValid;
+    }
+
+</script>

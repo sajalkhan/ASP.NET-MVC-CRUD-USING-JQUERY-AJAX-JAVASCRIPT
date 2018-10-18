@@ -1,0 +1,41 @@
+﻿@model MVCPractice1.Models.EmployeeViewModel
+
+@{
+    ViewBag.Title = "Start";
+}
+
+<div class="panel panel-body" style="margin-top: 5%">
+
+    <div class="col-md-3">
+        <div class="panel panel-warning">
+            <div class="panel-heading">
+                <h4 class="text-center">Director Message</h4>
+            </div>
+            <div class="panel-body">
+                <img src="~/images/soharub.jpg" class="img-responsive" />
+            </div>
+            <div class="panel-footer">
+                <p>
+                Hello Welcome to the technology world
+                <p />
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-9">
+
+        <ul class="nav nav-tabs">
+            <li class="active"><a data-toggle="tab" href="#firstTab">View All</a></li>
+            <li><a data-toggle="tab" href="#secondTab">Add</a></li>
+        </ul>
+        
+        @*-----------------------------------Load data partially------------------------------------*@
+
+        <div class="tab-content">
+            <div id="firstTab" class="tab-pane fade in active">@{Html.RenderAction("Index", Model);}</div>
+            <div id="secondTab" class="tab-pane fade in">@{Html.RenderAction("AddNewUser",Model);}</div>
+        </div>
+    </div>
+
+</div>
+
